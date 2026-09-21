@@ -8,20 +8,23 @@ try:
 except IndexError:
     carpeta= ''
 
-#Si no se le pasa carpeta usa cwd (current working directory)
-if carpeta=='.' or not carpeta:
-    carpeta=os.getcwd()
-directorio= pathlib.Path(carpeta)
+#Fundion para obtener el directorio, si no se pasa ningun argumento se toma el directorio actual
+def Obtener_directorio(carpeta):
+    if carpeta=='.' or not carpeta:
+        carpeta=os.getcwd()
+    return pathlib.Path(carpeta)
 
 #Se recorre el directorio y si encuentra un directorio continua, se extrae la extension del archivo y se crea una carpeta por cada tipo de extension
-for ruta in directorio.iterdir():
-    if ruta.is_dir():
-        continue
-    else:
-        extension= ruta.suffix
-        directorioext= directorio / extension
-        directorioext.mkdir(parents=True,exist_ok=True)
-        ruta.move_into(directorioext)
+directorio= Obtener_directorio(carpeta)
+def Organizar(directorio):
+    for ruta in directorio.iterdir():
+        if ruta.is_dir():
+            continue
+        else:
+            extension= ruta.suffix
+            directorioext= directorio / extension
+            directorioext.mkdir(parents=True,exist_ok=True)
+            ruta.move_into(directorioext)
 
 print('Organizado correctamente')
 
