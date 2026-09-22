@@ -17,7 +17,7 @@ def Obtener_directorio(carpeta):
 
 #Se recorre el directorio y si encuentra un directorio continua, se extrae la extension del archivo y se crea una carpeta por cada tipo de extension
 directorio= Obtener_directorio(carpeta)
-def Organizar(directorio):
+def Organizar(directorio, is_preview=False):
     tipos_archivos= defaultdict(int)
     for ruta in directorio.iterdir():
         if ruta.is_dir():
@@ -25,13 +25,14 @@ def Organizar(directorio):
         else:
             extension= ruta.suffix
             directorioext= directorio / extension
-            directorioext.mkdir(parents=True,exist_ok=True)
             tipos_archivos[extension] += 1
-            ruta.move_into(directorioext)
+            if not is_preview:
+                directorioext.mkdir(parents=True,exist_ok=True)
+                ruta.move_into(directorioext)
     return tipos_archivos
     
-
-tipos = Organizar(directorio)
+#Se recorre el diccionario de tipos de archivos y se imprime la extension y la cantidad de archivos que tiene cada extension
+tipos = Organizar(directorio, True)
 for extension, cantidad in tipos.items():
     print(f'Extension: {extension}, Cantidad: {cantidad}')
 
