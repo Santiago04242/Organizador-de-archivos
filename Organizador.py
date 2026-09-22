@@ -26,5 +26,6 @@ def Organizar(directorio):
             directorioext.mkdir(parents=True,exist_ok=True)
             ruta.move_into(directorioext)
 
+Organizar(directorio)
 print('Organizado correctamente')
 
