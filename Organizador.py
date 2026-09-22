@@ -30,6 +30,17 @@ def Organizar(directorio, is_preview=False):
                 directorioext.mkdir(parents=True,exist_ok=True)
                 ruta.move_into(directorioext)
     return tipos_archivos
+
+def Desorganizar(directorio):
+    for carpeta in directorio.iterdir():
+        nombre_carpeta= carpeta.parents.name
+        if carpeta.is_dir():
+            for archivo in carpeta.iterdir():
+                extension= archivo.suffix
+                if extension==nombre_carpeta:
+                    archivo.move_into(directorio)
+        else:
+            continue
     
 #Se recorre el diccionario de tipos de archivos y se imprime la extension y la cantidad de archivos que tiene cada extension
 tipos = Organizar(directorio, True)
