@@ -1,6 +1,7 @@
 import pathlib
 import sys 
 import os
+from collections import defaultdict
 
 #Manejo de error IndexError
 try:
@@ -17,6 +18,7 @@ def Obtener_directorio(carpeta):
 #Se recorre el directorio y si encuentra un directorio continua, se extrae la extension del archivo y se crea una carpeta por cada tipo de extension
 directorio= Obtener_directorio(carpeta)
 def Organizar(directorio):
+    tipos_archivos= defaultdict(int)
     for ruta in directorio.iterdir():
         if ruta.is_dir():
             continue
@@ -24,8 +26,12 @@ def Organizar(directorio):
             extension= ruta.suffix
             directorioext= directorio / extension
             directorioext.mkdir(parents=True,exist_ok=True)
+            tipos_archivos[extension] += 1
             ruta.move_into(directorioext)
+    return tipos_archivos
+    
 
-Organizar(directorio)
-print('Organizado correctamente')
+tipos = Organizar(directorio)
+for extension, cantidad in tipos.items():
+    print(f'Extension: {extension}, Cantidad: {cantidad}')
 
