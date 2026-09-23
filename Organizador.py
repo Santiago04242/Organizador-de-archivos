@@ -9,7 +9,7 @@ try:
 except IndexError:
     carpeta= ''
 
-#Fundion para obtener el directorio, si no se pasa ningun argumento se toma el directorio actual
+#Función para obtener el directorio, si no se pasa ningun argumento se toma el directorio actual
 def Obtener_directorio(carpeta):
     if carpeta=='.' or not carpeta:
         carpeta=os.getcwd()
@@ -31,19 +31,32 @@ def Organizar(directorio, is_preview=False):
                 ruta.move_into(directorioext)
     return tipos_archivos
 
+#Se recorre el directorio y si encunetra un directorio igual a la extension de un archivo, se mueve el archivo al directorio principal y se elimina la carpeta
 def Desorganizar(directorio):
+    tipos_archivos= defaultdict(int)
     for carpeta in directorio.iterdir():
-        nombre_carpeta= carpeta.parents.name
+        nombre_carpeta= carpeta.name
         if carpeta.is_dir():
             for archivo in carpeta.iterdir():
                 extension= archivo.suffix
                 if extension==nombre_carpeta:
                     archivo.move_into(directorio)
-        else:
-            continue
-    
-#Se recorre el diccionario de tipos de archivos y se imprime la extension y la cantidad de archivos que tiene cada extension
-tipos = Organizar(directorio, True)
-for extension, cantidad in tipos.items():
-    print(f'Extension: {extension}, Cantidad: {cantidad}')
+                    tipos_archivos[extension] += 1
+            try:
+                carpeta.rmdir()   
+            except OSError:
+                pass
+    return tipos_archivos
+
+#Menu de opciones para organizar o desorganizar archivos
+if sys.argv[2] == "-o":
+    tipos = Organizar(directorio)
+    for extension, cantidad in tipos.items():
+        print(f'Extension: {extension}, Cantidad: {cantidad}')
+elif sys.argv[2] == "-d":
+    tipos = Desorganizar(directorio)
+    for extension, cantidad in tipos.items():
+        print(f'Se extrajeron las siguientes extensiones: {extension}, Cantidad: {cantidad}')
+else:
+    print("Opción no válida. Use '-o' para organizar o '-d' para desorganizar.")
 
